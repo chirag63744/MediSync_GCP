@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSync - AI-Enabled Smart Ambulance Service</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles to match App Theme -->
+    <style>
+        :root {
+            --theme-pink-deep: #DB2777; /* Tailwind pink-600 */
+            --theme-pink-light: #FDF2F8; /* Tailwind rose-50 */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+        }
+        .text-theme-pink {
+            color: var(--theme-pink-deep);
+        }
+        .bg-theme-pink {
+            background-color: var(--theme-pink-deep);
+        }
+        .bg-theme-light {
+            background-color: var(--theme-pink-light);
+        }
+        .btn-primary {
+            background-color: var(--theme-pink-deep);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* full */
+            font-weight: 700;
+            box-shadow: 0 4px 14px 0 rgba(219, 39, 119, 0.38);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #c21d6b; /* Darker pink */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(219, 39, 119, 0.45);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--theme-pink-deep);
+            border: 2px solid var(--theme-pink-deep);
+            padding: 0.625rem 1.5rem; /* 10px 24px */
+            border-radius: 9999px; /* full */
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem; /* 8px */
+        }
+        .btn-secondary:hover {
+            background-color: var(--theme-pink-light);
+            transform: translateY(-2px);
+        }
+        .card {
+            background-color: white;
+            border-radius: 1.5rem; /* 24px */
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07), 0 20px 25px -5px rgba(0, 0, 0, 0.06);
+        }
+        .phone-frame {
+            border: 0.75rem solid #1f2937; /* gray-800 */
+            border-radius: 2.5rem; /* 40px */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            background-color: #1f2937;
+        }
+        .phone-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-theme-light">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold text-theme-pink">
+                MediSync
+            </h1>
+            <!-- Button Container -->
+            <div class="flex items-center">
+                <a href="#features" class="btn-primary hidden md:inline-block">
+                    How It Works
+                </a>
+                <a href="index3.html" class="btn-secondary hidden md:inline-block">
+                    AI Dashboard
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main>
+        <section class="bg-theme-light relative overflow-hidden">
+            <div class="container mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center">
+                <!-- Text Content -->
+                <div class="md:w-1/2 w-full text-center md:text-left">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+                        Bridging the <span class="text-theme-pink">'10-Minute Gap'</span>
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-lg mx-auto md:mx-0">
+                        MediSync is an AI-enabled smart ambulance service designed to improve emergency medical response times and patient outcomes.
+                    </p>
+                    <div class="mt-8">
+                        <a href="#screenshots" class="btn-primary">
+                            See The App
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Image Content -->
+                <div class="md:w-1/2 w-full mt-12 md:mt-0 flex justify-center">
+                    <img src="image_d00beb.png" 
+                         alt="MediSync Ambulance Illustration" 
+                         class="max-w-xs md:max-w-sm"
+                         onerror="this.src='https://placehold.co/400x400/FDF2F8/DB2777?text=MediSync'; this.classList.add('border', 'border-pink-200', 'p-4');">
+                </div>
+            </div>
+            <!-- Wavy divider simulation -->
+            <div style="height: 150px; overflow: hidden; width: 100%; position: absolute; bottom: -1px; left: 0;">
+                <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; transform: translateY(60%);">
+                    <path fill="#ffffff" fill-opacity="1" d="M0,192L48,176C96,160,192,128,288,133.3C384,139,480,181,576,208C672,235,768,245,864,229.3C960,213,1056,171,1152,149.3C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Problem Section -->
+        <section id="problem" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">
+                    The Solution to a Critical Problem
+                </h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+                    MediSync addresses the critical <span class="font-bold text-theme-pink">'10-Minute Gap'</span> in emergency care. Our AI-driven platform connects patients, drivers, and hospitals efficiently, reducing ambulance delay-related fatalities and improving survival rates for critical patients.
+                </p>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">
+                        Our AI-Driven Solution
+                    </h2>
+                    <p class="mt-3 text-lg text-gray-600">
+                        A complete ecosystem for emergency response.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Feature Card 1 -->
+                    <div class="card p-6 text-center">
+                        <div class="text-5xl mb-4">📱</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Seamless Booking</h3>
+                        <p class="text-gray-600">
+                            Users can locate and book the nearest ambulance with one click through our intuitive User App.
+                        </p>
+                    </div>
+                    <!-- Feature Card 2 -->
+                    <div class="card p-6 text-center">
+                        <div class="text-5xl mb-4">🧠</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Smart Allocation</h3>
+                        <p class="text-gray-600">
+                            Our AI Core intelligently assigns the best-suited ambulance based on location, availability, and traffic.
+                        </p>
+                    </div>
+                    <!-- Feature Card 3 -->
+                    <div class="card p-6 text-center">
+                        <div class="text-5xl mb-4">📈</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">In-Transit Data</h3>
+                        <p class="text-gray-600">
+                            Real-time patient monitoring and data synthesis create a "Critical Condition Summary" for hospitals.
+                        </p>
+                    </div>
+                    <!-- Feature Card 4 -->
+                    <div class="card p-6 text-center">
+                        <div class="text-5xl mb-4">🏥</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Intelligent Matching</h3>
+                        <p class="text-gray-600">
+                            Patients are intelligently routed to the most appropriate, best-equipped facility for their specific needs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works (AI Core) -->
+        <section class="py-16 md:py-24 bg-theme-pink text-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold">
+                        The Cognitive AI Core
+                    </h2>
+                    <p class="mt-3 text-lg text-pink-100 max-w-2xl mx-auto">
+                        Our AI uses a 3-step decision cycle to ensure the fastest, most effective response.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row justify-center items-stretch gap-8">
+                    <!-- Step 1 -->
+                    <div class="md:w-1/3 bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                        <span class="text-3xl font-extrabold text-pink-200">01.</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-3">Smart Allocation</h3>
+                        <p class="text-pink-50">
+                            Based on real-time location and availability, the AI dispatches the nearest and most appropriate ambulance.
+                        </p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="md:w-1/3 bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                        <span class="text-3xl font-extrabold text-pink-200">02.</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-3">In-Transit Synthesis</h3>
+                        <p class="text-pink-50">
+                            Live patient vitals and historical data are synthesized into a "Critical Condition Summary" for the receiving hospital.
+                        </p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="md:w-1/3 bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                        <span class="text-3xl font-extrabold text-pink-200">03.</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-3">Intelligent Matching</h3>
+                        <p class="text-pink-50">
+                            The AI identifies the best-equipped facility based on the patient's summary and live hospital capabilities.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- App Screenshots Section -->
+        <section id="screenshots" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">
+                        See It In Action
+                    </h2>
+                    <p class="mt-3 text-lg text-gray-600">
+                        A seamless experience for users, drivers, and hospitals.
+                    </p>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-center items-center gap-12 md:gap-16">
+                    <!-- Phone 1 -->
+                    <div class="w-full max-w-[280px]">
+                        <div class="phone-frame">
+                            <img src="image_d00beb.png" 
+                                 alt="MediSync Login Screen"
+                                 onerror="this.src='https://placehold.co/300x650/DB2777/FFFFFF?text=App+Screenshot+1';">
+                        </div>
+                        <p class="text-center font-semibold text-gray-700 mt-4">Book Seamlessly</p>
+                    </div>
+                    
+                    <!-- Phone 2 -->
+                    <div class="w-full max-w-[280px]">
+                        <div class="phone-frame">
+                            <img src="image_d00c22.jpg" 
+                                 alt="MediSync Home Screen"
+                                 onerror="this.src='https://placehold.co/300x650/DB2777/FFFFFF?text=App+Screenshot+2';">
+                        </div>
+                        <p class="text-center font-semibold text-gray-700 mt-4">Manage Your Care</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-2xl font-bold text-white mb-2">
+                MediSync
+            </h2>
+            <p class="mb-4">
+                Improving Emergency Response with AI.
+            </p>
+            <p class="text-sm">
+                &copy; 2025 MediSync. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

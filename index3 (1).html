@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSync AI Core Operations</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Console-like scrollbar for the output area */
+        #output-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        #output-area::-webkit-scrollbar-thumb {
+            background-color: #10b981; /* Emerald-500 */
+            border-radius: 3px;
+        }
+        #output-area {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+        }
+        /* Style the markdown tables in the output for dark theme */
+        #output-area table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        #output-area th, #output-area td {
+            border: 1px solid #374151; /* Gray-700 */
+            padding: 8px;
+            text-align: left;
+        }
+        #output-area th {
+            background-color: #1f2937; /* Gray-800 */
+            color: #d1d5db; /* Gray-300 */
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            color: #9ca3af; /* Gray-400 */
+            border-bottom: 2px solid transparent;
+        }
+        .tab-button.active {
+            color: #10b981; /* Emerald-500 */
+            border-bottom: 2px solid #10b981;
+        }
+        .tab-button:hover:not(.active) {
+            color: #d1d5db; /* Gray-300 */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen p-4 sm:p-8 flex items-center justify-center text-white">
+    <div class="w-full max-w-4xl bg-gray-800 shadow-2xl rounded-xl p-6 sm:p-10 border border-emerald-500/30">
+        <header class="mb-4 border-b border-emerald-600/50 pb-4">
+            <h1 class="text-3xl font-extrabold text-emerald-400 tracking-wider flex items-center">
+                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l2-2 2 2v13M9 19c0 1.105.895 2 2 2h2c1.105 0 2-.895 2-2M9 19h6m-6 0v-3m6 3v-3m-3 3v-3m0 0V6"></path></svg>
+                MediSync AI Core Dashboard
+            </h1>
+        </header>
+
+        <main class="space-y-6">
+            <!-- Tab Navigation -->
+            <div class="flex border-b border-gray-700">
+                <button id="tab-operations" class="tab-button active" onclick="switchTab('operations')">
+                    Operations Console
+                </button>
+                <button id="tab-about" class="tab-button" onclick="switchTab('about')">
+                    About & Use Cases
+                </button>
+            </div>
+
+            <!-- 1. Operations View (Main functionality) -->
+            <div id="operations-view" class="space-y-6">
+                <!-- Main Prompt Input -->
+                <div class="space-y-2">
+                    <label for="prompt" class="block text-sm font-medium text-gray-300">
+                        Operation Query
+                    </label>
+                    <textarea id="prompt" rows="3" class="w-full p-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition duration-150 placeholder-gray-400" placeholder="e.g., 'Generate the critical condition summary for the patient via demo@medisync.com' or 'Provide an urgent handover report for AmbulanceID_A101_ICU' or 'Suggest new allocation zones based on 30 days of history'"></textarea>
+                </div>
+
+                <!-- Optional Parameters Row -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-700 rounded-lg border border-gray-600">
+                    <div class="space-y-2">
+                        <label for="user_email" class="block text-xs font-medium text-gray-400">
+                            1. Patient Email (For In-Transit Data Synthesis)
+                        </label>
+                        <input type="email" id="user_email" value="demo@medisync.com" class="w-full p-2 border border-gray-600 bg-gray-800 rounded-lg text-sm text-emerald-400" placeholder="user@example.com">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="ambulance_id" class="block text-xs font-medium text-gray-400">
+                            2. Ambulance ID (For Urgent Handover / Fleet Check)
+                        </label>
+                        <input type="text" id="ambulance_id" value="AmbulanceID_A101_ICU" class="w-full p-2 border border-gray-600 bg-gray-800 rounded-lg text-sm text-emerald-400" placeholder="AmbulanceID_A101_ICU">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="duration" class="block text-xs font-medium text-gray-400">
+                            3. History Days (For Smart Allocation Analysis)
+                        </label>
+                        <input type="number" id="duration" value="7" class="w-full p-2 border border-gray-600 bg-gray-800 rounded-lg text-sm text-emerald-400" placeholder="e.g., 7">
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button id="run-button" onclick="runAgent()" class="w-full px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition duration-300 shadow-lg shadow-emerald-600/30 flex items-center justify-center disabled:opacity-50" disabled>
+                    <svg id="spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span id="button-text">Execute AI Core Command</span>
+                </button>
+                
+                <!-- Hidden Message Box (Status/Error) -->
+                <div id="message-box" class="hidden p-4 rounded-lg bg-red-800/50 text-red-300 font-medium border border-red-500/50"></div>
+
+                <!-- Output Area -->
+                <div class="bg-gray-900 p-4 rounded-lg shadow-inner mt-6 border border-gray-700">
+                    <h3 class="text-md font-semibold text-emerald-400 mb-3 border-b border-gray-700 pb-2 uppercase tracking-wider">
+                        Agent Output Terminal
+                    </h3>
+                    <div id="output-area" class="h-64 overflow-y-auto text-gray-300 text-sm p-2 rounded bg-gray-900">
+                        Awaiting command execution...
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. About & Use Cases View (Descriptive content) -->
+            <div id="about-view" class="space-y-6 hidden">
+                <!-- Project Description -->
+                <div class="p-4 bg-gray-700/50 rounded-lg border border-emerald-700/50 space-y-3">
+                    <h2 class="text-xl font-bold text-emerald-300">MediSync Project Overview</h2>
+                    <p class="text-gray-400 text-sm">
+                        MediSync is an AI-enabled smart ambulance service designed to improve emergency medical response times and patient outcomes. It addresses the critical '10-Minute Gap' in emergency care by using an AI-driven platform to connect patients, drivers, and hospitals efficiently. The goal is to reduce ambulance delay-related fatalities and improve survival rates for critical patients.
+                    </p>
+                </div>
+
+                <!-- AI Core Description Block -->
+                <div class="p-4 bg-gray-700/50 rounded-lg border border-emerald-700/50 space-y-3">
+                    <h2 class="text-xl font-bold text-emerald-300">Cognitive AI Core: 3-Step Decision Cycle</h2>
+                    <p class="text-gray-400 text-sm">
+                        The MediSync AI Core addresses the '10-Minute Gap' by specializing in three critical functions, powered by distinct data tools:
+                    </p>
+                    <ul class="text-sm space-y-1 text-gray-300 ml-4 list-disc list-outside">
+                        <li>**1. In-Transit Data Synthesis:** Creates a Critical Condition Summary from historical patient data. (Uses **Patient Email**)</li>
+                        <li>**2. Intelligent Hospital Matching / Fleet Check:** Provides urgent handover reports or fleet readiness status. (Uses **Ambulance ID**)</li>
+                        <li>**3. Smart Allocation:** Analyzes historical call volume/response times to recommend optimal re-deployment. (Uses **History Days**)</li>
+                    </ul>
+                </div>
+                
+                <!-- Quick Use Cases & Prompts -->
+                <div class="p-4 bg-gray-700/50 rounded-lg border border-emerald-700/50 space-y-3">
+                    <h3 class="text-lg font-bold text-emerald-300">Quick Use Cases & Prompts</h3>
+                    <p class="text-gray-400 text-sm">Use the prompt field in the Operations Console to request actionable reports, often referencing the optional parameters:</p>
+                    
+                    <ul class="text-xs space-y-2 text-gray-400">
+                        <li class="border-b border-gray-700 pb-1">
+                            <strong class="text-emerald-300">Use Case A: Critical Patient Chart Review (Data Synthesis)</strong>
+                            <span class="block ml-2 mt-0.5 italic">"Generate a critical condition summary for the patient via <span class="text-red-400">demo@medisync.com</span>."</span>
+                        </li>
+                        <li class="border-b border-gray-700 pb-1">
+                            <strong class="text-emerald-300">Use Case B: Hospital Handover (Fleet Check - Specific ID)</strong>
+                            <span class="block ml-2 mt-0.5 italic">"Provide an urgent handover report for <span class="text-red-400">AmbulanceID_A101_ICU</span>, focusing on patient vitals."</span>
+                        </li>
+                         <li class="border-b border-gray-700 pb-1">
+                            <strong class="text-emerald-300">Use Case C: Fleet Resource Audit (Fleet Check - All)</strong>
+                            <span class="block ml-2 mt-0.5 italic">"Summarize the readiness of the entire ambulance fleet, highlighting critical resource issues."</span>
+                        </li>
+                        <li>
+                            <strong class="text-emerald-300">Use Case D: Deployment Planning (Smart Allocation)</strong>
+                            <span class="block ml-2 mt-0.5 italic">"Suggest new allocation zones based on <span class="text-red-400">30 days</span> of history, and justify the recommendation."</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Use a global variable to store the API URL, assuming relative path on Cloud Run
+        const API_URL = '/agent/run'; 
+
+        // Function to generate a random UUID (required for user_id)
+        function generateUUID() {
+            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
+        }
+
+        // --- Tab Switching Logic ---
+        function switchTab(tabName) {
+            const operationsView = document.getElementById('operations-view');
+            const aboutView = document.getElementById('about-view');
+            const tabOperations = document.getElementById('tab-operations');
+            const tabAbout = document.getElementById('tab-about');
+
+            if (tabName === 'operations') {
+                operationsView.classList.remove('hidden');
+                aboutView.classList.add('hidden');
+                tabOperations.classList.add('active');
+                tabAbout.classList.remove('active');
+            } else if (tabName === 'about') {
+                operationsView.classList.add('hidden');
+                aboutView.classList.remove('hidden');
+                tabOperations.classList.remove('active');
+                tabAbout.classList.add('active');
+            }
+        }
+
+        // Enable button when content is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('run-button').disabled = false;
+        });
+
+        // Simple function to display temporary messages (instead of alert)
+        function showMessage(message, isError = false) {
+            const box = document.getElementById('message-box');
+            box.textContent = message;
+            box.className = isError 
+                ? 'p-4 rounded-lg bg-red-800/50 text-red-300 font-medium border border-red-500/50' 
+                : 'p-4 rounded-lg bg-emerald-800/50 text-emerald-300 font-medium border border-emerald-500/50';
+            box.classList.remove('hidden');
+        }
+        
+        // Function to toggle loading state
+        function setLoading(isLoading) {
+            const button = document.getElementById('run-button');
+            const buttonText = document.getElementById('button-text');
+            const spinner = document.getElementById('spinner');
+
+            button.disabled = isLoading;
+            buttonText.textContent = isLoading ? 'Running...' : 'Execute AI Core Command';
+            if (isLoading) {
+                spinner.classList.remove('hidden');
+            } else {
+                spinner.classList.add('hidden');
+            }
+        }
+
+        // Main function to call the Agent API
+        async function runAgent() {
+            setLoading(true);
+            document.getElementById('message-box').classList.add('hidden');
+            document.getElementById('output-area').innerHTML = '<span class="text-emerald-400">Executing command... Please wait.</span>';
+            
+            const prompt = document.getElementById('prompt').value.trim();
+            const user_email = document.getElementById('user_email').value.trim();
+            const ambulance_id = document.getElementById('ambulance_id').value.trim();
+            const duration = document.getElementById('duration').value.trim();
+            
+            if (!prompt) {
+                showMessage('Please enter an operation query to run the agent.', true);
+                setLoading(false);
+                document.getElementById('output-area').innerHTML = 'Awaiting command execution...';
+                return;
+            }
+
+            // Construct the payload
+            const payload = {
+                user_id: generateUUID(),
+                prompt: prompt,
+            };
+
+            // Enhance prompt based on filled parameters for better tool selection accuracy
+            let effectivePrompt = prompt;
+
+            if (user_email && prompt.includes('summarize reports') && !prompt.includes(user_email)) {
+                 effectivePrompt += ` (user email is ${user_email})`;
+            }
+            if (ambulance_id && prompt.includes('equipment') && !prompt.includes(ambulance_id)) {
+                 effectivePrompt += ` (ID is ${ambulance_id})`;
+            }
+            if (duration && prompt.includes('location') && !prompt.includes(duration)) {
+                 effectivePrompt += ` (history days is ${duration})`;
+            }
+            
+            // Final payload for the agent run
+            payload.prompt = effectivePrompt;
+            
+            try {
+                // Implementing exponential backoff for the fetch request
+                let maxRetries = 5;
+                let delay = 1000;
+                let response = null;
+                
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        response = await fetch(API_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (response.status !== 429) { // 429 is Too Many Requests (throttle)
+                            break; // Success or non-throttling error
+                        }
+                        
+                        // Wait for delay before next retry
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2; // Exponential backoff
+
+                    } catch (fetchError) {
+                        // Log fatal network errors and break
+                        console.error(`Fetch attempt ${i + 1} failed:`, fetchError);
+                        response = null;
+                        break;
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    const errorData = response ? await response.json() : { error: "Network or unknown error." };
+                    throw new Error(errorData.error || `HTTP error! Status: ${response ? response.status : 'Unknown'}`);
+                }
+
+                const data = await response.json();
+                
+                // Process and display the agent's response
+                let output = data.response;
+
+                // Simple check to identify and format markdown tables/code blocks
+                if (output.includes('```markdown') || output.includes('|---')) {
+                    // This quick fix focuses on making the text readable, especially tables
+                    output = output.replace(/```markdown\n/g, '').replace(/\n```/g, '');
+                }
+
+                // Inject output into the DOM
+                document.getElementById('output-area').innerHTML = formatOutput(output);
+                showMessage('Agent execution complete.', false);
+
+            } catch (error) {
+                console.error('API Call Error:', error);
+                const errorMessage = `An error occurred: ${error.message}. Check console and ensure the Python Agent is running.`;
+                document.getElementById('output-area').innerHTML = `<span class="text-red-400">${errorMessage}</span>`;
+                showMessage('Command failed. Check logs.', true);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // Function to safely inject and display the markdown content (handling common markdown elements)
+        function formatOutput(text) {
+            let html = text;
+
+            // Simple line break conversion
+            html = html.replace(/\n/g, '<br>');
+
+            // Convert markdown headings (###) to bold text (themed in emerald)
+            html = html.replace(/###\s*(.*?)<br>/g, '<br><strong class="text-emerald-400 text-lg">$1</strong><br>');
+
+            // Convert Markdown bold (**text**) to HTML bold
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Convert list items (* item) to formatted lists (using soft dots)
+            html = html.replace(/\*\s*(.*?)(<br>)/g, '<div class="ml-4 text-gray-300 before:content-[\'•\'] before:mr-2 before:text-emerald-500">$1</div>');
+            
+            // Make PDF link stand out and clickable (critical alert style)
+            html = html.replace(/(\[PDF Report Saved:.*?\/(.*?\.pdf)\])/g, '<br><span class="font-bold text-red-400">CRITICAL DATA READY:</span> <a href="$2" target="_blank" class="text-red-300 underline hover:text-red-500 transition duration-150">$1</a>');
+
+            // Handle horizontal rule (---)
+            html = html.replace(/---/g, '<hr class="border-gray-700 my-3">');
+
+            // If it looks like a table, ensure monospace font is used
+            if (html.includes('|---|')) {
+                return `<div class="bg-gray-900 p-3 overflow-x-auto rounded border border-gray-700">${html}</div>`;
+            }
+
+            return html;
+        }
+    </script>
+</body>
+</html>

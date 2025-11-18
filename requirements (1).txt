@@ -1,0 +1,13 @@
+google-adk==1.17.0
+fastapi
+uvicorn
+firebase-admin == 6.5.0
+google-generativeai
+pymupdf
+litellm
+requests == 2.32.5
+# CRITICAL FIX: Force a specific version to stop the infinite loop
+tenacity==8.2.3
+# OPTIONAL: Pin google-auth if issues persist
+google-auth>=2.29.0
+python-dotenv
