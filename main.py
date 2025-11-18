@@ -82,7 +82,7 @@ AMBULANCE_LOCATION_HISTORY = [
 # --- Gemini and Firebase Setup (Unchanged) ---
 
 print("--- Configuring GenAI and setting ENV VAR ---")
-GEMINI_API_KEY = "AIzaSyBR1D3ztmCcKs7ivRIml-dV-G6UW1XdZvk"
+GEMINI_API_KEY = ""
 os.environ["GEMINI_API_KEY"] = GEMINI_API_KEY
 print(f"--- Set OS Environ GEMINI_API_KEY to: {GEMINI_API_KEY[:4]}... ---")
 
@@ -108,7 +108,7 @@ print("--- Initializing Firebase Admin ---")
 try:
     if not firebase_admin._apps:
         # Replace with your actual Firebase project ID/bucket name
-        STORAGE_BUCKET = 'medisync-1695206869761.appspot.com'
+        STORAGE_BUCKET = ''
         firebase_admin.initialize_app(options={
             'storageBucket': STORAGE_BUCKET
         })
